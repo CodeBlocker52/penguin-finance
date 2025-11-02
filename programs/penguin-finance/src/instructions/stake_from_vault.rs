@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use anchor_lang::system_program::{create_account, CreateAccount};
 
 use crate::constants::*;
 use crate::errors::ErrorCode;

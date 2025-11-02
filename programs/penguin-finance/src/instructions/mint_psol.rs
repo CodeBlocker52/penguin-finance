@@ -103,7 +103,7 @@ pub fn handler(
         user_position.collateral_amount = 0;
         user_position.psol_debt = 0;
         user_position.last_update_epoch = clock.epoch;
-        user_position.bump = *ctx.bumps.get("user_position").unwrap();
+        user_position.bump = ctx.bumps.user_position;
         
         psol_controller.active_positions = psol_controller
             .active_positions

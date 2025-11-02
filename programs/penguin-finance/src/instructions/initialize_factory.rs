@@ -61,7 +61,7 @@ pub fn handler(ctx: Context<InitializeFactory>) -> Result<()> {
     factory.paused = false;
     factory.psol_mint = ctx.accounts.psol_mint.key();
     factory.psol_controller = psol_controller_key;
-    factory.bump = *ctx.bumps.get("factory").unwrap();
+    factory.bump = ctx.bumps.factory;
 
     // Initialize pSOL controller
     let psol_controller = &mut ctx.accounts.psol_controller;
@@ -73,7 +73,7 @@ pub fn handler(ctx: Context<InitializeFactory>) -> Result<()> {
     psol_controller.liquidation_threshold = LIQUIDATION_THRESHOLD;
     psol_controller.liquidation_bonus = LIQUIDATION_BONUS;
     psol_controller.active_positions = 0;
-    psol_controller.bump = *ctx.bumps.get("psol_controller").unwrap();
+    psol_controller.bump = ctx.bumps.psol_controller;
 
     emit!(FactoryInitialized {
         factory: factory_key,

@@ -11,6 +11,7 @@ pub struct UpdateVaultBalance<'info> {
     #[account(
         seeds = [FACTORY_SEED],
         bump = factory.bump,
+        has_one = treasury,
     )]
     pub factory: Account<'info, Factory>,
 
@@ -18,20 +19,28 @@ pub struct UpdateVaultBalance<'info> {
         mut,
         seeds = [VAULT_SEED, vault.factory.as_ref(), &vault.vault_id.to_le_bytes()],
         bump = vault.bump,
-        has_one = factory,
         has_one = vault_token_mint,
+        has_one = operator,
     )]
     pub vault: Account<'info, Vault>,
 
     #[account(mut)]
     pub vault_token_mint: Account<'info, Mint>,
 
+    /// Vault operator account
+    /// CHECK: Validated via vault.has_one constraint
+    pub operator: UncheckedAccount<'info>,
+
+    /// Protocol treasury account
+    /// CHECK: Validated via factory.has_one constraint
+    pub treasury: UncheckedAccount<'info>,
+
     /// Operator's vault token account (receives fee shares)
     #[account(
         init_if_needed,
         payer = oracle,
         associated_token::mint = vault_token_mint,
-        associated_token::authority = vault.operator,
+        associated_token::authority = operator,
     )]
     pub operator_token_account: Account<'info, TokenAccount>,
 
@@ -40,7 +49,7 @@ pub struct UpdateVaultBalance<'info> {
         init_if_needed,
         payer = oracle,
         associated_token::mint = vault_token_mint,
-        associated_token::authority = factory.treasury,
+        associated_token::authority = treasury,
     )]
     pub treasury_token_account: Account<'info, TokenAccount>,
 

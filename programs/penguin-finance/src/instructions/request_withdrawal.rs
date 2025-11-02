@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{burn, Burn, Token, TokenAccount};
+use anchor_spl::token::Mint;
 
 use crate::constants::*;
 use crate::errors::ErrorCode;
@@ -97,7 +98,7 @@ pub fn handler(ctx: Context<RequestWithdrawal>, vault_token_amount: u64) -> Resu
     withdrawal_ticket.request_epoch = clock.epoch;
     withdrawal_ticket.ready_to_claim = vault.buffered_sol >= expected_sol;
     withdrawal_ticket.claimed = false;
-    withdrawal_ticket.bump = *ctx.bumps.get("withdrawal_ticket").unwrap();
+    withdrawal_ticket.bump = ctx.bumps.withdrawal_ticket;
 
     emit!(WithdrawalRequested {
         vault: vault.key(),
